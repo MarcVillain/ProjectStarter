@@ -1,0 +1,37 @@
+description: "Simple python command line program"
+requirements:
+  - pip
+  - virtualenv
+commands:
+  - "virtualenv venv --python={{ bin.python3 }}"
+  - "source venv/bin/activate"
+  - "pip install -r requirements.txt"
+  - "{{ options.git.commands }}"
+files:
+  - "{{ project.slug }}.py"
+options:
+  - name: package
+    files:
+      - "setup.py"
+  - name: cli
+    files:
+      - commands/
+  - name: logging
+    description: setup simple logging
+  - name: git
+    description: initiate a git repository and create the first commit
+    files:
+      - ".gitignore"
+      - "requirements.txt"
+    commands:
+      - "git init"
+      - "git add ."
+      - "git commit -m 'init: first commit'"
+  - name: readme
+    description: create a README.md file
+    files:
+      - "README.md"
+  - name: makefile
+    description: add a Makefile
+    files:
+      - "Makefile"
