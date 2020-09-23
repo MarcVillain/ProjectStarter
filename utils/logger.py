@@ -14,21 +14,29 @@ def setup(verbose):
     _logger.addHandler(stream_handler)
 
 
-def _log(func, msg, prefix, *args, **kwargs):
-    func(f"{prefix or ''}{msg}", *args, **kwargs)
+def _log(func, msg, prefix, **kwargs):
+    func(f"{prefix or ''}{msg}", **kwargs)
 
 
-def info(msg, prefix=None, *args, **kwargs):
-    _log(_logger.info, msg, prefix, *args, **kwargs)
+def info(msg, *args, prefix=None, **kwargs):
+    if len(args) > 0:
+        msg = f"{msg} {' '.join(args)}"
+    _log(_logger.info, msg, prefix, **kwargs)
 
 
-def error(msg, prefix=None, *args, **kwargs):
-    _log(_logger.error, f"error: {msg}", prefix, *args, **kwargs)
+def error(msg, *args, prefix=None, **kwargs):
+    if len(args) > 0:
+        msg = f"{msg} {' '.join(args)}"
+    _log(_logger.error, f"error: {msg}", prefix, **kwargs)
 
 
-def warning(msg, prefix=None, *args, **kwargs):
-    _log(_logger.warning, f"warning: {msg}", prefix, *args, **kwargs)
+def warning(msg, *args, prefix=None, **kwargs):
+    if len(args) > 0:
+        msg = f"{msg} {' '.join(args)}"
+    _log(_logger.warning, f"warning: {msg}", prefix, **kwargs)
 
 
-def debug(msg, prefix=None, *args, **kwargs):
-    _log(_logger.debug, f"debug: {msg}", prefix, *args, **kwargs)
+def debug(msg, *args, prefix=None, **kwargs):
+    if len(args) > 0:
+        msg = f"{msg} {' '.join(args)}"
+    _log(_logger.debug, f"debug: {msg}", prefix, **kwargs)

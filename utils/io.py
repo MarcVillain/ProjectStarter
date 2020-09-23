@@ -3,7 +3,7 @@ import os
 import yaml
 
 
-def load_yaml(file_path):
+def yaml_load(file_path):
     if not os.path.exists(file_path):
         return None
 
