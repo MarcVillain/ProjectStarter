@@ -1,5 +1,10 @@
 # Custom
 .idea/
+venv
+build
+dist
+*.egg-info
+*.nosync
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/linux,python,macos,vim,pycharm
