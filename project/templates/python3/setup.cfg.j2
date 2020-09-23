@@ -1,0 +1,26 @@
+[metadata]
+name = {{ project.name }}
+author = FIXME
+author-email = FIXME
+home-page = FIXME
+description = FIXME
+{% if options.readme is defined -%}
+long-description = file: README.md
+long_description_content_type = text/markdown
+{%- endif %}
+{% if options.license is defined -%}
+license = FIXME
+license-file = LICENSE.md
+{%- endif %}
+platform = any
+classifiers =
+    Programming Language :: Python :: 3.6
+    License :: OSI Approved :: MIT License
+    Operating System :: OS Independent
+
+[options]
+zip_safe = false
+include_package_data = true
+python_requires = >= 3.6
+setup_requires =
+    black

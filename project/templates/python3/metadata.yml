@@ -6,7 +6,8 @@ commands:
   - "{{ options.venv.commands }}"
   - "{{ options.git.commands }}"
 files:
-  - "{{ project.slug }}.py.j2"
+  - "{{ project.slug }}/__init__.py.j2"
+  - "{{ project.slug }}/__main__.py.j2"
 options:
   venv:
     description: "create a virtual environment"
@@ -19,10 +20,13 @@ options:
     description: add packaging files
     files:
       - "setup.py.j2"
+      - "setup.cfg.j2"
+      - "MANIFEST.in.j2"
+      - "{{ project.slug }}/_version.py.j2"
   cli:
     description : add a command line interface structure
     files:
-      - "commands/"
+      - "{{ project.slug }}/commands/"
   logging:
     description: setup simple logging
   git:
@@ -37,6 +41,10 @@ options:
     description: create a README.md file
     files:
       - "README.md.j2"
+  license:
+    description: create a LICENSE.md file
+    files:
+      - "LICENSE.md.j2"
   makefile:
     description: add a Makefile
     files:

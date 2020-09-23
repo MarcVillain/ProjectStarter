@@ -4,11 +4,16 @@ List all the available templates.
 import argparse
 import re
 
-from utils import templates as tmplts, logger
+from project.utils import templates as tmplts
+from project.utils import logger
 
 
 def run(args):
     templates = tmplts.all()
+
+    if len(templates) == 0:
+        logger.info("No templates found.")
+        return
 
     max_template_name_len = max(len(name) for name in templates.keys()) + 4
 

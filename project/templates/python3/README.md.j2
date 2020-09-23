@@ -1,7 +1,7 @@
-ProjectStarter
+{{ project.name }}
 ===
 
-Get straight to coding by automagically creating a project folder with little to no effort.
+FIXME_DESCRIPTION
 
 # Setup
 
@@ -11,19 +11,23 @@ python3 -m venv venv
 source ./venv/bin/activate
 ```
 
+{% if options.package is defined -%}
 # Install
 
 ```
 pip install .
 ```
+{%- endif %}
 
 # Run
 
+{% if options.package is defined -%}
 ```
 project --help
 ```
 
 or
+{%- endif %}
 
 ```
 python -m project --help
@@ -31,5 +35,4 @@ python -m project --help
 
 # Authors
 
-* Marc Villain (marc.villain@epita.fr)
-
+* FIXME_FIRST FIXME_LAST (FIXME_EMAIL)

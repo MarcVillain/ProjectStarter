@@ -10,8 +10,9 @@ import jinja2
 import yaml
 from slugify import slugify
 
-import config
-from utils import templates, logger, files, io
+from project import config
+from project.utils import templates
+from project.utils import files, logger
 
 
 def run(args):

@@ -5,8 +5,8 @@ from collections import OrderedDict
 import jinja2
 import yaml
 
-import config
-from utils import io, logger
+from project import config
+from project.utils import io, logger
 
 
 def _prepare_jenv(jenv):

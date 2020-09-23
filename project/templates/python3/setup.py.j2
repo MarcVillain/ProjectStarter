@@ -1,0 +1,31 @@
+import re
+
+import setuptools
+from setuptools import setup
+
+
+VERSION_FILE = "{{ project.slug }}/_version.py"
+
+
+def get_version():
+    with open(VERSION_FILE, "rt") as f:
+        pattern = r"^__version__ = ['\"]([^'\"]*)['\"]"
+        line = f.read()
+        match = re.search(pattern, line, re.M)
+        if match:
+            return match.group(1)
+        else:
+            raise RuntimeError("Unable to find version string in %s." % (VERSION_FILE,))
+
+
+if __name__ == "__main__":
+    setup(
+        version=get_version(),
+        packages=setuptools.find_packages(),
+        {% if options.cli is defined -%}
+        entry_points={
+            "console_scripts": ["FIXME_COMMAND_NAME={{ project.slug }}.__main__:main"],
+        },
+        {%- endif %}
+        include_package_data=True,
+    )

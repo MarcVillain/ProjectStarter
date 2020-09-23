@@ -4,14 +4,16 @@ import math
 import pkgutil
 import sys
 
-from utils import logger
+import project
+from project._version import __version__
+from project.utils import logger
 
 
 def _extract_commands():
-    module_names = [module.name for module in pkgutil.iter_modules(["commands"])]
+    module_names = [module.name for module in pkgutil.iter_modules(project.commands.__path__)]
     commands = {}
     for module_name in module_names:
-        module = importlib.import_module(f"commands.{module_name}")
+        module = importlib.import_module(f"project.commands.{module_name}")
         if module.__doc__ is not None:
             commands[module_name] = {
                 "description": module.__doc__.strip().lower(),
@@ -23,7 +25,7 @@ def _extract_commands():
 
 def _build_usage_and_desc(commands):
     # Build usage
-    usage = "project [-h] [-v] <command> [options]"
+    usage = "project [-h] [-v] [-V] <command> [options]"
 
     # Build description
     description = "Generate project templates."
@@ -44,6 +46,12 @@ def parse():
     # Build parser
     parser = argparse.ArgumentParser(
         usage=usage, description=description, formatter_class=argparse.RawTextHelpFormatter
+    )
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=__version__,
     )
     parser.add_argument(
         "-v",
