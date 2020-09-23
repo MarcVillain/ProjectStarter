@@ -5,6 +5,7 @@ import argparse
 import os
 import subprocess
 
+import jinja2
 import yaml
 from slugify import slugify
 
@@ -29,12 +30,13 @@ def run(args):
     if template_metadata is None:
         return
 
-    # Complete parse data
-    data = {**data, **template_metadata}
-
     # Keep only requested options
     if "options" in template_metadata:
         template_metadata["options"] = {k: v for k, v in template_metadata["options"].items() if k in args.options}
+
+    # Complete parse data
+    data = {**data, **template_metadata}
+    logger.debug(f"Data: {data}")
 
     # Create destination folder
     if files.mkdir(output_path) is False:
@@ -85,7 +87,12 @@ def run(args):
         elif command[0] == "[":
             commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader))
         elif "{{" in command and "}}" in command:
-            commands += _parse_command(templates.parse_string(command, data))
+            try:
+                commands += _parse_command(templates.parse_string(command, data))
+            except jinja2.exceptions.UndefinedError:
+                # In case the value is undefined, it means the command
+                # should not be executed
+                pass
         else:
             commands.append(command)
         return commands

@@ -1,7 +1,14 @@
-{% if options.cli %}import argparse{% endif %}
-{% if options.logging %}import logging{% endif %}
-{% if options.logging %}import sys{% endif %}
-{% if options.logging %}
+{% if options.cli is defined -%}
+    import argparse
+{%- endif %}
+{% if options.logging is defined -%}
+    import logging
+{%- endif %}
+{% if options.cli is defined -%}
+    import sys
+{%- endif %}
+
+{% if options.logging is defined -%}
 logger = logging.getLogger("{{ project.slug }}")
 
 
@@ -13,20 +20,26 @@ def setup_logging(verbose, silent):
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(log_level)
         logger.addHandler(stream_handler)
-{% endif %}
+{%- endif %}
+
 
 def main(args):
     print("Running project {{ project.slug }}")
 
-{% if options.cli %}
+
+{% if options.cli is defined -%}
 def parse_command_line(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", action="store_true", help="Set logging level to DEBUG.")
     parser.add_argument("-s", "--silent", action="store_true", help="Remove logging in STDOUT.")
     return parser.parse_args(argv[1:])
-{% endif %}
+{%- endif %}
+
 
 if __name__ == "__main__":
-    {% if options.cli %}args = parse_command_line(sys.argv){% else %}args = []{% endif %}
+    {% if options.cli is defined -%}
+    args = parse_command_line(sys.argv)
+    {%- else -%}
+    args = []
+    {%- endif %}
     main(args)
-

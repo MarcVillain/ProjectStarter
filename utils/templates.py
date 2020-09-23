@@ -25,6 +25,7 @@ def parse_yaml(yaml_string, data):
 
 
 def parse(path, data):
+    logger.debug(f"Parsing '{path}'")
     loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(path))
 
     jenv = jinja2.Environment(loader=loader)
