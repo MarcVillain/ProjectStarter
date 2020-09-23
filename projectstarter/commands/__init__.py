@@ -4,16 +4,16 @@ import math
 import pkgutil
 import sys
 
-import project
-from project._version import __version__
-from project.utils import logger
+import projectstarter
+from projectstarter._version import __version__
+from projectstarter.utils import logger
 
 
 def _extract_commands():
-    module_names = [module.name for module in pkgutil.iter_modules(project.commands.__path__)]
+    module_names = [module.name for module in pkgutil.iter_modules(projectstarter.commands.__path__)]
     commands = {}
     for module_name in module_names:
-        module = importlib.import_module(f"project.commands.{module_name}")
+        module = importlib.import_module(f"projectstarter.commands.{module_name}")
         if module.__doc__ is not None:
             commands[module_name] = {
                 "description": module.__doc__.strip().lower(),

@@ -4,7 +4,7 @@ import setuptools
 from setuptools import setup
 
 
-VERSION_FILE = "project/_version.py"
+VERSION_FILE = "projectstarter/_version.py"
 
 
 def get_version():
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         version=get_version(),
         packages=setuptools.find_packages(),
         entry_points={
-            "console_scripts": ["project=project.__main__:main"],
+            "console_scripts": ["project=projectstarter.__main__:main"],
         },
         include_package_data=True,
     )

@@ -4,8 +4,8 @@ List all the available templates.
 import argparse
 import re
 
-from project.utils import templates as tmplts
-from project.utils import logger
+from projectstarter.utils import templates as tmplts
+from projectstarter.utils import logger
 
 
 def run(args):

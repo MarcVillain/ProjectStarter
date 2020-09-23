@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from project.utils import logger
+from projectstarter.utils import logger
 
 
 def mkdir(path, ignore_errors=False):

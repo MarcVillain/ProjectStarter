@@ -1,4 +1,4 @@
-from project import commands
+from projectstarter import commands
 
 
 def main():
