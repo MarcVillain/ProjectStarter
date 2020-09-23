@@ -4,25 +4,24 @@ requirements:
   - virtualenv
 commands:
   - "virtualenv venv --python={{ which('python3') }}"
-  - "source venv/bin/activate"
-  - "pip install -r requirements.txt"
+  - "source venv/bin/activate && pip install -r requirements.txt"
   - "{{ options.git.commands }}"
 files:
-  - "{{ project.slug }}.py"
+  - "{{ project.slug }}.py.j2"
 options:
   package:
     files:
-      - "setup.py"
+      - "setup.py.j2"
   cli:
     files:
-      - commands/
+      - "commands/"
   logging:
     description: setup simple logging
   git:
     description: initiate a git repository and create the first commit
     files:
-      - ".gitignore"
-      - "requirements.txt"
+      - ".gitignore.j2"
+      - "requirements.txt.j2"
     commands:
       - "git init"
       - "git add ."
@@ -30,8 +29,8 @@ options:
   readme:
     description: create a README.md file
     files:
-      - "README.md"
+      - "README.md.j2"
   makefile:
     description: add a Makefile
     files:
-      - "Makefile"
+      - "Makefile.j2"

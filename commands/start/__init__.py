@@ -24,9 +24,13 @@ def run(args):
     }
 
     # Load template metadata
+    logger.info(f"Loading template '{args.template}'")
     template_metadata = templates.metadata(args.template, data)
     if template_metadata is None:
         return
+
+    # Complete parse data
+    data = {**data, **template_metadata}
 
     # Keep only requested options
     if "options" in template_metadata:
@@ -52,20 +56,17 @@ def run(args):
         path = os.path.join(template_folder, file)
         if os.path.isdir(path):
             for path in files.all_in(path):
-                subfile = path.replace(f"{template_folder}{os.path.sep}", "")
-                paths_to_copy[subfile] = path
+                dest_path = path.replace(f"{template_folder}", output_path)
+                paths_to_copy[path] = templates.parse_string(dest_path, data).replace(".j2", "")
         else:
-            paths_to_copy[file] = path
+            dest_path = path.replace(f"{template_folder}", output_path)
+            paths_to_copy[path] = templates.parse_string(dest_path, data).replace(".j2", "")
     logger.debug(f"Paths to copy: {paths_to_copy}")
 
-    # Complete parse data
-    data = {**data, **template_metadata}
-
     # Parse and copy files to destination
-    for path_relative, src in paths_to_copy.items():
+    logger.info(f"Creating project '{project_name}'")
+    for src, dst in paths_to_copy.items():
         # Retrieve destination folder
-        dst = os.path.join(output_path, path_relative)
-        dst = templates.parse_string(dst, data)
         logger.debug(src, "-->", dst)
         # Ensure destination folder exists
         files.mkdir(os.path.dirname(dst), ignore_errors=True)
@@ -95,12 +96,13 @@ def run(args):
 
     # Execute chained commands in output folder
     for command in commands:
-        logger.info(f"Running command '{command}'")
+        logger.info(f"Running command '{command}' in project")
         with subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=output_path, shell=True
         ) as p:
             try:
-                _, stderr = p.communicate()
+                stdout, stderr = p.communicate()
+                logger.debug(stdout.decode("utf-8"))
                 ret_val = p.returncode
                 if ret_val != 0:
                     logger.error(f"Commands execution failed with error code {ret_val}")
