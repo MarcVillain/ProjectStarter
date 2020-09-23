@@ -3,6 +3,7 @@ Generate a project from a template.
 """
 import argparse
 import os
+import re
 import subprocess
 
 import jinja2
@@ -32,7 +33,11 @@ def run(args):
 
     # Keep only requested options
     if "options" in template_metadata:
-        template_metadata["options"] = {k: v for k, v in template_metadata["options"].items() if k in args.options}
+        template_metadata["options"] = {
+            k: v
+            for k, v in template_metadata["options"].items()
+            if any(True for option in args.options if re.match(option, k))
+        }
 
     # Complete parse data
     data = {**data, **template_metadata}
