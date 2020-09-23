@@ -8,6 +8,7 @@ commands:
 files:
   - "{{ project.slug }}/__init__.py.j2"
   - "{{ project.slug }}/__main__.py.j2"
+  - "{{ project.slug }}/utils/__init__.py.j2"
 options:
   venv:
     description: "create a virtual environment"
@@ -29,6 +30,8 @@ options:
       - "{{ project.slug }}/commands/"
   logging:
     description: setup simple logging
+    files:
+      - "{{ project.slug }}/utils/logger.py.j2"
   git:
     description: initiate a git repository and create the first commit
     files:

@@ -4,7 +4,9 @@ import math
 import pkgutil
 import sys
 
-from utils import logger
+{% if options.logging is defined -%}
+from {{ project.slug }}.utils import logger
+{%- endif %}
 
 
 def _extract_commands():
@@ -62,12 +64,18 @@ def parse():
 
     args = parser.parse_args(sys.argv[1:first_not_option_arg_pos])
 
+    {% if options.logging is defined -%}
     # Set logging level
     logger.setup(args.verbose)
+    {%- endif %}
 
     # Check if command is valid
     if args.command not in commands:
+        {% if options.logging is defined -%}
         logger.info(f"project: '{args.command}' is not a project starter command. See 'project --help'.")
+        {%- else -%}
+        print(f"project: '{args.command}' is not a project starter command. See 'project --help'.")
+        {%- endif %}
         exit(1)
 
     # Dispatch command call
