@@ -29,6 +29,14 @@ or
 python -m project --help
 ```
 
+# Debug
+
+```shell script
+pip install -e .
+project --help
+```
+
+
 # Templates
 
 The templates are located in `project/templates`.
