@@ -23,16 +23,16 @@ pip install .
 
 {% if options.package is defined -%}
 ```
-project --help
+{{ project.slug }} --help
 ```
 
 or
 {%- endif %}
 
 ```
-python -m project --help
+python -m {{ project.slug }} --help
 ```
 
 # Authors
 
-* FIXME_FIRST FIXME_LAST (FIXME_EMAIL)
+* FIXME_FIRST FIXME_LAST <FIXME_EMAIL>
