@@ -1,0 +1,24 @@
+description: "Simple bash program"
+requirements: []
+commands:
+  - "{{ options.git.commands }}"
+files:
+  - "Makefile.j2"
+  - "src/main.sh.j2"
+options:
+  git:
+    description: initiate a git repository and create the first commit
+    files:
+      - ".gitignore.j2"
+    commands:
+      - "git init"
+      - "git add ."
+      - "git commit -m 'init: first commit'"
+  readme:
+    description: create a README.md file
+    files:
+      - "README.md.j2"
+  license:
+    description: create a LICENSE.md file
+    files:
+      - "LICENSE.md.j2"

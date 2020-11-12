@@ -1,0 +1,18 @@
+BIN = {{ project.slug }}
+SHELL = /bin/bash
+
+SRC = $(shell find ${PWD}/src -type f)
+
+all: ${BIN}
+
+${BIN}: ${SRC}
+	echo -e "#!${SHELL}\n" > ${BIN}
+	for filename in ${SRC}; do cat $${filename} | sed -E '/^#/d' >> ${BIN}; echo >> ${BIN}; done
+	echo -e "\n\nmain \$$@" >> ${BIN}
+	cat -s ${BIN} > ${BIN}.tmp
+	mv ${BIN}.tmp ${BIN}
+	chmod +x ${BIN}
+
+clean:
+	$(RM) ${BIN}
+
