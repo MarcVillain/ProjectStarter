@@ -5,6 +5,12 @@ from projectstarter.utils import logger
 
 
 def mkdir(path, ignore_errors=False):
+    """
+    Create a directory if folder does not exist. It creates every folder in
+    the given path.
+    :param ignore_errors: If True, do not throw error when folder already exists
+    :returns: True on success, False on error
+    """
     if not ignore_errors and os.path.exists(path):
         logger.warning(f"Folder '{path}' already exists.")
         return False
@@ -20,6 +26,9 @@ def mkdir(path, ignore_errors=False):
 
 
 def all_in(folder):
+    """
+    Generator that yields every file in a folder and its sub-folders.
+    """
     for (folder_path, folders, filenames) in os.walk(folder):
         for file in filenames:
             yield os.path.join(folder_path, file)
@@ -28,6 +37,9 @@ def all_in(folder):
 
 
 def rm(path):
+    """
+    Remove the given path. The path can be either a directory or a regular file.
+    """
     if os.path.isdir(path):
         shutil.rmtree(path, ignore_errors=True)
         return

@@ -16,6 +16,10 @@ from projectstarter.utils import files, logger
 
 
 def run(args):
+    """
+    Run the start command.
+    :param args: Arguments passés à la commande
+    """
     output_path = os.path.abspath(args.output)
     project_name = os.path.basename(output_path)
     data = {
@@ -129,6 +133,11 @@ def run(args):
 
 
 def parse(prog, args):
+    """
+    Parse les arguments passés à la commande start
+    :param prog: Nom du programme
+    :param args: Arguments passés à la commande
+    """
     parser = argparse.ArgumentParser(prog=prog, description=__doc__)
     parser.add_argument("template", help="template to use (see 'project templates' for an exhaustive list)")
     parser.add_argument("output", help="destination folder")

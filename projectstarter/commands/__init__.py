@@ -10,6 +10,10 @@ from projectstarter.utils import logger
 
 
 def _extract_commands():
+    """
+    Get list of commands from 'commands' module.
+    :returns: List of string of command's name
+    """
     module_names = [module.name for module in pkgutil.iter_modules(projectstarter.commands.__path__)]
     commands = {}
     for module_name in module_names:
@@ -24,6 +28,11 @@ def _extract_commands():
 
 
 def _build_usage_and_desc(commands):
+    """
+    Generate usage string.
+    :param commands: List of available commands
+    :returns: Tuple(usage string, description string)
+    """
     # Build usage
     usage = "project [-h] [-v] [-V] <command> [options]"
 
@@ -39,6 +48,9 @@ def _build_usage_and_desc(commands):
 
 
 def parse():
+    """
+    Parse tous les arguments passés au CLI.
+    """
     # Get CLI information
     commands = _extract_commands()
     usage, description = _build_usage_and_desc(commands)
