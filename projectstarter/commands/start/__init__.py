@@ -102,7 +102,7 @@ def run(args):
                 commands += _parse_command(cmd)
         elif command[0] == "[":
             commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader))
-        elif "{{" in command and "}}" in command:
+        elif ("{{" in command and "}}" in command) or ("{%" in command and "%}" in command):
             try:
                 commands += _parse_command(templates.parse_string(command, data))
             except jinja2.exceptions.UndefinedError:
