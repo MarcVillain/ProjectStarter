@@ -36,6 +36,12 @@ pip install -e .
 project --help
 ```
 
+# Troubleshooting
+
+* error: invalid command 'bdist_wheel'
+  ```
+  pip install wheel
+  ```
 
 # Templates
 
