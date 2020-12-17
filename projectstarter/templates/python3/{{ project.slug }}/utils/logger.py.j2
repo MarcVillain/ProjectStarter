@@ -40,3 +40,4 @@ def debug(msg, *args, prefix=None, **kwargs):
     if len(args) > 0:
         msg = f"{msg} {' '.join(args)}"
     _log(_logger.debug, f"debug: {msg}", prefix, **kwargs)
+
