@@ -16,6 +16,7 @@ options:
       - "requirements.txt.j2"
     commands:
       - "virtualenv venv --python={{ which('python3') }}"
+      - "{% if options.cli %}source venv/bin/activate && pip install wheel{% endif %}"
       - "source venv/bin/activate && pip install -r requirements.txt"
   package:
     description: add packaging files

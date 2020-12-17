@@ -57,15 +57,12 @@ def parse(path, data):
     return template.render(**data)
 
 
-def metadata(name, data=None):
+def metadata(name):
     """
     Retrieve the metadata from the 'templates/{name}/metadata.yml' file.
     :param name: Name of the template
     :returns: Dictionary of metadata on success. None on error.
     """
-    if data is None:
-        data = {}
-
     metadata_path = os.path.join(config.templates_folder, name, "metadata.yml")
 
     template_metadata = io.yaml_load(metadata_path)

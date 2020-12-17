@@ -119,7 +119,7 @@ def run(args):
 
     # Execute chained commands in output folder
     for command in commands:
-        logger.info(f"Running command '{command}' in project")
+        logger.info(f"Running command '{command}'")
         with subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=output_path, shell=True
         ) as p:
