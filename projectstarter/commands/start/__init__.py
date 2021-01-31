@@ -149,7 +149,6 @@ def run(args):
             return 1
 
         # Display unmatched options
-        # FIXME: no longer relevant
         option_has_not_matched = False
         for option in args.options:
             if option.split(config.options_sep)[0] not in options.keys():
