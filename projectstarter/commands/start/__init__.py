@@ -15,6 +15,43 @@ from projectstarter.utils import templates
 from projectstarter.utils import files, logger
 
 
+def _parse_command(command, data):
+    logger.debug(f"parsing command: {type(command)}: {command}")
+    commands = []
+
+    # Parse a list of commands
+    if isinstance(command, list):
+        for cmd in command:
+            commands += _parse_command(cmd, data)
+    elif command[0] == "[":
+        commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader), data)
+
+    # Parse a Jinja2 formatted command
+    elif ("{{" in command and "}}" in command) or (
+            "{%" in command and "%}" in command
+    ):
+        try:
+            command_str = templates.parse_string(command, data)
+            commands += _parse_command(command_str, data)
+        except jinja2.exceptions.UndefinedError:
+            # In case the value is undefined, it means the command
+            # should not be executed
+            pass
+
+    # Parse a regular command
+    else:
+        commands.append(command)
+
+    return commands
+
+
+def parse_commands(data):
+    parsed_commands = []
+    for command in data.get("commands", []):
+        parsed_commands += _parse_command(command, data)
+    return parsed_commands
+
+
 def _retrieve_options(patterns, options_tree):
     """
     Recursive iteration on nested options. If an option matches one of
@@ -50,6 +87,12 @@ def _retrieve_options(patterns, options_tree):
                 if config.options_sep not in pattern:
                     # Handle simple option
                     if re.match(pattern, name):
+                        # Parse commands in current context to avoid carrying wrong information
+                        value["commands"] = parse_commands(value)
+                        # No need for nested options on match
+                        if "options" in value.keys():
+                            value.pop("options")
+                        # Add option in options list
                         options[name] = value
                 else:
                     # Handle nested option
@@ -66,7 +109,7 @@ def _retrieve_options(patterns, options_tree):
                             return None
                         # Prefix keys with current name
                         new_options = {
-                            f"{name}{config.options_sep}{k}": v
+                            f"{name}": v
                             for k, v in new_options.items()
                         }
                         # Add new items to resulting options
@@ -109,7 +152,7 @@ def run(args):
         # Display unmatched options
         option_has_not_matched = False
         for option in args.options:
-            if option not in options.keys():
+            if option.split(config.options_sep)[0] not in options.keys():
                 option_has_not_matched = True
                 logger.error(f"Option pattern '{option}' did not match anything.")
         if option_has_not_matched:
@@ -120,6 +163,10 @@ def run(args):
     # Complete parse data
     data = {**data, **template_metadata}
     logger.debug(f"Data: {data}")
+
+    # Parse commands
+    commands = parse_commands(data)
+    logger.debug(f"Commands: {commands}")
 
     # Create destination folder
     if files.mkdir(output_path) is False:
@@ -167,39 +214,6 @@ def run(args):
         # Write to file
         with open(dst, "w") as f:
             f.write(content)
-
-    # Retrieve list of commands to run
-    def _parse_command(command):
-        logger.debug(f"parsing command: {command}")
-        commands = []
-
-        # Parse a list of commands
-        if isinstance(command, list):
-            for cmd in command:
-                commands += _parse_command(cmd)
-        elif command[0] == "[":
-            commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader))
-
-        # Parse a Jinja2 formatted command
-        elif ("{{" in command and "}}" in command) or (
-            "{%" in command and "%}" in command
-        ):
-            try:
-                commands += _parse_command(templates.parse_string(command, data))
-            except jinja2.exceptions.UndefinedError:
-                # In case the value is undefined, it means the command
-                # should not be executed
-                pass
-
-        # Parse a regular command
-        else:
-            commands.append(command)
-
-        return commands
-
-    commands = []
-    for command in data.get("commands", []):
-        commands += _parse_command(command)
 
     # Execute chained commands in output folder
     for command in commands:

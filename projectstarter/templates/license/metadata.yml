@@ -1,5 +1,10 @@
 description: "license file"
+requirements:
+  - curl
+  - jq
+commands:
+  - "{{ options.mit.commands }}"
 options:
   mit:
-    files:
-      - "LICENSE.md.j2"
+    commands:
+      - "curl https://api.github.com/licenses/mit | jq -r .body > LICENSE.md"

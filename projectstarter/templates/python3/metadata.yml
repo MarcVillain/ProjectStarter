@@ -5,6 +5,7 @@ requirements:
 commands:
   - "{{ options.venv.commands }}"
   - "{{ options.git.commands }}"
+  - "{{ options.license.commands }}"
 files:
   - "{{ project.slug }}/__init__.py.j2"
   - "{{ project.slug }}/__main__.py.j2"
