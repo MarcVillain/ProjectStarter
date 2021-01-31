@@ -73,8 +73,6 @@ def _include_templates(data):
         # Extract templates to include
         elif k == "include_templates":
             templates += v
-        else:
-            continue
 
     # if there are templates to include
     if len(templates) > 0:

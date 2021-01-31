@@ -146,7 +146,7 @@ def run(args):
     # Keep only requested options
     if "options" in template_metadata:
         options = _retrieve_options(args.options, template_metadata)
-        if not options:
+        if options is None:
             return 1
 
         # Display unmatched options
