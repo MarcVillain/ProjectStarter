@@ -1,6 +1,8 @@
 ProjectStarter
 ===
 
+![ProjectStarter](logo.png?raw=true "ProjectStarter logo")
+
 Get straight to coding by automagically creating a project folder with little to no effort.
 
 # Setup
