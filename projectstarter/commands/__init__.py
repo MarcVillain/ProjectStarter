@@ -14,7 +14,9 @@ def _extract_commands():
     Get list of commands from 'commands' module.
     :returns: List of string of command's name
     """
-    module_names = [module.name for module in pkgutil.iter_modules(projectstarter.commands.__path__)]
+    module_names = [
+        module.name for module in pkgutil.iter_modules(projectstarter.commands.__path__)
+    ]
     commands = {}
     for module_name in module_names:
         module = importlib.import_module(f"projectstarter.commands.{module_name}")
@@ -59,7 +61,9 @@ def parse():
 
     # Build parser
     parser = argparse.ArgumentParser(
-        usage=usage, description=description, formatter_class=argparse.RawTextHelpFormatter
+        usage=usage,
+        description=description,
+        formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "-V",
@@ -89,7 +93,9 @@ def parse():
 
     # Check if command is valid
     if args.command not in commands:
-        logger.info(f"project: '{args.command}' is not a project starter command. See 'project --help'.")
+        logger.info(
+            f"project: '{args.command}' is not a project starter command. See 'project --help'."
+        )
         return 1
 
     # Dispatch command call

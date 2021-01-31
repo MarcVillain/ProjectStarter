@@ -26,7 +26,9 @@ def run(args):
         description = data.get("description", "").lower().strip()
 
         # Apply search filter
-        if args.filter and not (re.match(args.filter, name) or re.match(args.filter, description)):
+        if args.filter and not (
+            re.match(args.filter, name) or re.match(args.filter, description)
+        ):
             continue
 
         name_log = name.ljust(max_template_name_len)

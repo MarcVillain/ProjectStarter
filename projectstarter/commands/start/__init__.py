@@ -56,7 +56,9 @@ def run(args):
     # Create destination folder
     if files.mkdir(output_path) is False:
         if not args.force:
-            logger.error("Destination folder already exists. You can force its removal with the --force option.")
+            logger.error(
+                "Destination folder already exists. You can force its removal with the --force option."
+            )
             return 1
         logger.warning(f"Force option set: remove folder '{output_path}'")
         files.rm(output_path)
@@ -75,10 +77,14 @@ def run(args):
         if os.path.isdir(path):
             for path in files.all_in(path):
                 dest_path = path.replace(f"{template_folder}", output_path)
-                paths_to_copy[path] = templates.parse_string(dest_path, data).replace(".j2", "")
+                paths_to_copy[path] = templates.parse_string(dest_path, data).replace(
+                    ".j2", ""
+                )
         else:
             dest_path = path.replace(f"{template_folder}", output_path)
-            paths_to_copy[path] = templates.parse_string(dest_path, data).replace(".j2", "")
+            paths_to_copy[path] = templates.parse_string(dest_path, data).replace(
+                ".j2", ""
+            )
     logger.debug(f"Paths to copy: {paths_to_copy}")
 
     # Parse and copy files to destination
@@ -107,7 +113,9 @@ def run(args):
             commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader))
 
         # Parse a Jinja2 formatted command
-        elif ("{{" in command and "}}" in command) or ("{%" in command and "%}" in command):
+        elif ("{{" in command and "}}" in command) or (
+            "{%" in command and "%}" in command
+        ):
             try:
                 commands += _parse_command(templates.parse_string(command, data))
             except jinja2.exceptions.UndefinedError:
@@ -129,7 +137,11 @@ def run(args):
     for command in commands:
         logger.info(f"Running command '{command}'")
         with subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=output_path, shell=True
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=output_path,
+            shell=True,
         ) as p:
             try:
                 stdout, stderr = p.communicate()
@@ -153,8 +165,23 @@ def parse(prog, args):
     :param args: Arguments passés à la commande
     """
     parser = argparse.ArgumentParser(prog=prog, description=__doc__)
-    parser.add_argument("template", help="template to use (see 'project templates' for an exhaustive list)")
+    parser.add_argument(
+        "template",
+        help="template to use (see 'project templates' for an exhaustive list)",
+    )
     parser.add_argument("output", help="destination folder")
-    parser.add_argument("-o", "--options", metavar="OPTION", nargs="*", default=[], help="options to activate")
-    parser.add_argument("-f", "--force", action="store_true", help="erase destination directory if it exists")
+    parser.add_argument(
+        "-o",
+        "--options",
+        metavar="OPTION",
+        nargs="*",
+        default=[],
+        help="options to activate",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="erase destination directory if it exists",
+    )
     return parser.parse_args(args)
