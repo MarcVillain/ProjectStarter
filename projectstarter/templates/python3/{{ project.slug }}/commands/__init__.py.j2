@@ -4,6 +4,7 @@ import math
 import pkgutil
 import sys
 
+from {{ project.slug }}._version import __version__
 {% if options.logging is defined -%}
 from {{ project.slug }}.utils import logger
 {%- endif %}
@@ -59,14 +60,24 @@ def parse():
 
     # Build parser
     parser = argparse.ArgumentParser(
-        usage=usage, description=description, formatter_class=argparse.RawTextHelpFormatter
+        usage=usage,
+        description=description,
+        formatter_class=argparse.RawTextHelpFormatter
     )
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=__version__,
+    )
+    {% if options.logging is defined -%}
     parser.add_argument(
         "-v",
         "--verbose",
-        action="store_true",
+        action="count",
         help="set logging level to DEBUG",
     )
+    {%- endif %}
     parser.add_argument("command", help="command to run")
 
     # Parse arguments
@@ -80,7 +91,7 @@ def parse():
 
     {% if options.logging is defined -%}
     # Set logging level
-    logger.setup(args.verbose)
+    logger.setup(args.verbose or False)
     {%- endif %}
 
     # Check if command is valid

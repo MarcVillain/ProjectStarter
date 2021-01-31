@@ -74,7 +74,7 @@ def parse():
     parser.add_argument(
         "-v",
         "--verbose",
-        action="store_true",
+        action="count",
         help="set logging level to DEBUG",
     )
     parser.add_argument("command", help="command to run")
@@ -89,7 +89,7 @@ def parse():
     args = parser.parse_args(sys.argv[1:first_not_option_arg_pos])
 
     # Set logging level
-    logger.setup(args.verbose)
+    logger.setup(args.verbose or False)
 
     # Check if command is valid
     if args.command not in commands:
@@ -100,6 +100,6 @@ def parse():
 
     # Dispatch command call
     cmd_args = commands[args.command]["func_parse"](
-        f"{sys.argv[0]} {args.command}", sys.argv[first_not_option_arg_pos:]
+        f"project {args.command}", sys.argv[first_not_option_arg_pos:]
     )
     return commands[args.command]["func_run"](cmd_args)
