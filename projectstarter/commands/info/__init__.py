@@ -3,13 +3,19 @@ Get more information on a template
 """
 import argparse
 
+from projectstarter.utils import templates, io
+
 
 def run(args):
     """
     Run the command.
     :param args: Arguments given to the command
     """
-    return 2
+    metadata = templates.metadata(args.template)
+    if not metadata:
+        return 1
+
+    io.yaml_dump(metadata)
 
 
 def parse(prog, args):
