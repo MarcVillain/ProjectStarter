@@ -1,11 +1,11 @@
 ProjectStarter : Template
 ===
 
-The templates are located in `project/templates` and are based on the [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/) templating format.
+The templates are located in `projectstarter/templates` and are based on the [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/) templating format.
 
 # Add a template
 
-To add a template, you need to add a folder in the `project/templates` folder. The name of the folder will correspond to the name of the template.
+To add a template, you need to add a folder in the `projectstarter/templates` folder. The name of the folder will correspond to the name of the template.
 
 Then you should at least have a `metadata.yml` file, with at least a `description` field.
 
