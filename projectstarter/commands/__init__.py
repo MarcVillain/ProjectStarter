@@ -38,11 +38,13 @@ def _build_usage_and_desc(commands):
 
     # Build description
     description = "Generate project templates."
-    command_max_len = 4 * math.ceil(len(max(commands.keys(), key=len)) / 4)
-    for command_name, command in commands.items():
-        command_name = command_name.ljust(command_max_len)
-        command_desc = command["description"]
-        description += f"\n    {command_name}{command_desc}"
+    if len(commands) > 0:
+        description += "\n\navailable commands:"
+        command_max_len = 4 * math.ceil(len(max(commands.keys(), key=len)) / 4)
+        for command_name, command in commands.items():
+            command_name = command_name.ljust(command_max_len)
+            command_desc = command["description"]
+            description += f"\n    {command_name}{command_desc}"
 
     return usage, description
 

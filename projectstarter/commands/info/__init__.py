@@ -1,5 +1,5 @@
 """
-Get more information on a template.
+Get more information on a template
 """
 import argparse
 

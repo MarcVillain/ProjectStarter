@@ -1,5 +1,5 @@
 """
-Generate a project from a template.
+Generate a project from a template
 """
 import argparse
 import os
@@ -46,7 +46,7 @@ def run(args):
                 if any(True for option in args.options if re.match(option, k))
             }
         except re.error as e:
-            logger.error(f"Pattern match failed: {e}")
+            logger.error(f"Pattern match for options failed: {e}")
             return
 
     # Complete parse data

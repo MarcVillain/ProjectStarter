@@ -1,5 +1,5 @@
 """
-List all the available templates.
+List all the available templates
 """
 import argparse
 import re

@@ -64,6 +64,7 @@ def metadata(name):
     :returns: Dictionary of metadata on success. None on error.
     """
     metadata_path = os.path.join(config.templates_folder, name, "metadata.yml")
+    logger.debug(f"metadata.yml path: {metadata_path}")
 
     template_metadata = io.yaml_load(metadata_path)
     if template_metadata is None:
