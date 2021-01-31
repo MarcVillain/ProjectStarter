@@ -47,9 +47,9 @@ project --help
 
 # Templates
 
-The templates are located in `project/templates`.
+The templates are located in `projectstarter/templates`.
 
-Look at [TEMPLATE.md](TEMPLATE.md) for more information.
+Look at [docs/TEMPLATE.md](docs/TEMPLATE.md) for more information.
 
 # Authors
 
