@@ -35,7 +35,7 @@ def run(args):
     template_metadata = templates.metadata(args.template)
     if template_metadata is None:
         logger.error("The template folder is missing its metadata file.")
-        return
+        return 1
 
     # Keep only requested options
     if "options" in template_metadata:
@@ -47,7 +47,7 @@ def run(args):
             }
         except re.error as e:
             logger.error(f"Pattern match for options failed: {e}")
-            return
+            return 1
 
     # Complete parse data
     data = {**data, **template_metadata}
@@ -57,7 +57,7 @@ def run(args):
     if files.mkdir(output_path) is False:
         if not args.force:
             logger.error("Destination folder already exists. You can force its removal with the --force option.")
-            return
+            return 1
         logger.warning(f"Force option set: remove folder '{output_path}'")
         files.rm(output_path)
 
@@ -132,7 +132,7 @@ def run(args):
                     logger.error(stderr)
             except:
                 p.kill()
-                raise
+                return 1
 
     # Success message
     logger.info(f"Project created at '{output_path}'")

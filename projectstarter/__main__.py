@@ -5,8 +5,8 @@ def main():
     """
     Entrypoint of the program.
     """
-    commands.parse()
+    return commands.parse()
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())

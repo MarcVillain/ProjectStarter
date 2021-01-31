@@ -9,7 +9,7 @@ def run(args):
     Run the info command.
     :param args: Arguments passés à la commande
     """
-    return
+    return 2
 
 
 def parse(prog, args):

@@ -17,7 +17,7 @@ def run(args):
 
     if len(templates) == 0:
         logger.info("No templates found.")
-        return
+        return 1
 
     max_template_name_len = max(len(name) for name in templates.keys()) + 4
 

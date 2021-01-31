@@ -90,10 +90,10 @@ def parse():
     # Check if command is valid
     if args.command not in commands:
         logger.info(f"project: '{args.command}' is not a project starter command. See 'project --help'.")
-        exit(1)
+        return 1
 
     # Dispatch command call
     cmd_args = commands[args.command]["func_parse"](
         f"{sys.argv[0]} {args.command}", sys.argv[first_not_option_arg_pos:]
     )
-    commands[args.command]["func_run"](cmd_args)
+    return commands[args.command]["func_run"](cmd_args)
