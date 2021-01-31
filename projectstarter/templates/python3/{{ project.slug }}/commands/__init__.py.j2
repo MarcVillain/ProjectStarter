@@ -10,6 +10,10 @@ from {{ project.slug }}.utils import logger
 
 
 def _extract_commands():
+    """
+    Get list of commands from 'commands' module.
+    :returns: List of string of command's name
+    """
     module_names = [module.name for module in pkgutil.iter_modules(["commands"])]
     commands = {}
     for module_name in module_names:
@@ -24,6 +28,11 @@ def _extract_commands():
 
 
 def _build_usage_and_desc(commands):
+    """
+    Generate usage string.
+    :param commands: List of available commands
+    :returns: Tuple(usage string, description string)
+    """
     # Build usage
     usage = "project [-h] [-v] <command> [options]"
 
@@ -41,6 +50,9 @@ def _build_usage_and_desc(commands):
 
 
 def parse():
+    """
+    Parse all the main CLI arguments.
+    """
     # Get CLI information
     commands = _extract_commands()
     usage, description = _build_usage_and_desc(commands)
@@ -74,9 +86,9 @@ def parse():
     # Check if command is valid
     if args.command not in commands:
         {% if options.logging is defined -%}
-        logger.info(f"project: '{args.command}' is not a project starter command. See 'project --help'.")
+        logger.info(f"project: '{args.command}' is not a project starter command. See `project --help`.")
         {%- else -%}
-        print(f"project: '{args.command}' is not a project starter command. See 'project --help'.")
+        print(f"project: '{args.command}' is not a project starter command. See `project --help`.")
         {%- endif %}
         return 1
 

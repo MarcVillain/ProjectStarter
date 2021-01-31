@@ -53,7 +53,7 @@ def _build_usage_and_desc(commands):
 
 def parse():
     """
-    Parse tous les arguments passés au CLI.
+    Parse all the main CLI arguments.
     """
     # Get CLI information
     commands = _extract_commands()
@@ -94,7 +94,7 @@ def parse():
     # Check if command is valid
     if args.command not in commands:
         logger.info(
-            f"project: '{args.command}' is not a project starter command. See 'project --help'."
+            f"project: '{args.command}' is not a project starter command. See `project --help`."
         )
         return 1
 

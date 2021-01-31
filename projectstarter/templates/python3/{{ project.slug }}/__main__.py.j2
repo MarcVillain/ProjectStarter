@@ -4,6 +4,9 @@ from {{ project.slug }}.utils import logger
 
 
 def main():
+    """
+    Entrypoint of the program.
+    """
     {% if options.cli is defined -%}
     return commands.parse()
     {%- else -%}

@@ -10,8 +10,8 @@ from projectstarter.utils import logger
 
 def run(args):
     """
-    Run the templates command.
-    :param args: Arguments passés à la commande
+    Run the command.
+    :param args: Arguments given to the command
     """
     templates = tmplts.all()
 
@@ -38,9 +38,9 @@ def run(args):
 
 def parse(prog, args):
     """
-    Parse les arguments passés à la commande templates
-    :param prog: Nom du programme
-    :param args: Arguments passés à la commande
+    Parse all the arguments given to the command.
+    :param prog: Name of the program
+    :param args: Arguments given to the command
     """
     parser = argparse.ArgumentParser(prog=prog, description=__doc__)
     parser.add_argument(
