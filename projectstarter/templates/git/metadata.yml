@@ -1,4 +1,4 @@
-description: "Git repository"
+description: "git repository"
 requirements:
   - git
 commands:

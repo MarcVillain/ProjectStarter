@@ -167,7 +167,7 @@ def parse(prog, args):
     parser = argparse.ArgumentParser(prog=prog, description=__doc__)
     parser.add_argument(
         "template",
-        help="template to use (see 'project templates' for an exhaustive list)",
+        help="template to use (see `project templates` for an exhaustive list)",
     )
     parser.add_argument("output", help="destination folder")
     parser.add_argument(

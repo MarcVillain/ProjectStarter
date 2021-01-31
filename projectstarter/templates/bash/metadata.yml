@@ -1,4 +1,4 @@
-description: "Simple bash program"
+description: "bash program"
 requirements: []
 commands:
   - "{{ options.git.commands }}"

@@ -1,4 +1,4 @@
-description: "Simple python command line program"
+description: "python command line program"
 requirements:
   - pip
   - virtualenv
