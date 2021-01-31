@@ -33,9 +33,10 @@ def _parse_command(command, data):
         try:
             command_str = templates.parse_string(command, data)
             commands += _parse_command(command_str, data)
-        except jinja2.exceptions.UndefinedError:
+        except jinja2.exceptions.UndefinedError as e:
             # In case the value is undefined, it means the command
             # should not be executed
+            logger.debug(f"jijna2 undefined error: {e}")
             pass
 
     # Parse a regular command
@@ -87,8 +88,6 @@ def _retrieve_options(patterns, options_tree):
                 if config.options_sep not in pattern:
                     # Handle simple option
                     if re.match(pattern, name):
-                        # Parse commands in current context to avoid carrying wrong information
-                        value["commands"] = parse_commands(value)
                         # No need for nested options on match
                         if "options" in value.keys():
                             value.pop("options")
@@ -150,6 +149,7 @@ def run(args):
             return 1
 
         # Display unmatched options
+        # FIXME: no longer relevant
         option_has_not_matched = False
         for option in args.options:
             if option.split(config.options_sep)[0] not in options.keys():
@@ -177,9 +177,12 @@ def run(args):
             return 1
         logger.warning(f"Force option set: removing folder '{output_path}'")
         files.rm(output_path)
+        if files.mkdir(output_path) is False:
+            logger.error("Something went wrong when trying to create destination folder.")
+            return 1
 
     # List files to copy over
-    files_to_copy = template_metadata["files"]
+    files_to_copy = template_metadata.get("files", [])
     for option, value in template_metadata.get("options", {}).items():
         files_to_copy += value.get("files", [])
     logger.debug(f"Files to copy: {files_to_copy}")

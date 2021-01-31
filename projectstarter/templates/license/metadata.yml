@@ -4,7 +4,11 @@ requirements:
   - jq
 commands:
   - "{{ options.mit.commands }}"
+  - "{{ options.lgpl3.commands }}"
 options:
   mit:
     commands:
       - "curl https://api.github.com/licenses/mit | jq -r .body > LICENSE.md"
+  lgpl3:
+    commands:
+      - "curl https://api.github.com/licenses/lgpl-3.0 | jq -r .body > LICENSE.md"
