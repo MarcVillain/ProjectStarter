@@ -16,6 +16,12 @@ from projectstarter.utils import files, logger
 
 
 def _parse_command(command, data):
+    """
+    Parse a single string command using the given data.
+    :param command: Command to parse
+    :param data: Data to give to the parser
+    :return: List of extracted commands
+    """
     logger.debug(f"parsing command: {type(command)}: {command}")
     commands = []
 
@@ -47,6 +53,11 @@ def _parse_command(command, data):
 
 
 def parse_commands(data):
+    """
+    Parse the data["commands"] using the data.
+    :param data: The data to use
+    :return: The parsed data
+    """
     parsed_commands = []
     for command in data.get("commands", []):
         parsed_commands += _parse_command(command, data)
