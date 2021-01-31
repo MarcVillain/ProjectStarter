@@ -15,6 +15,6 @@ options:
     files:
       - "README.md.j2"
   license:
-    description: create a LICENSE.md file
-    files:
-      - "LICENSE.md.j2"
+    description: create a license file
+    include_templates:
+      - license
