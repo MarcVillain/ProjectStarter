@@ -15,6 +15,69 @@ from projectstarter.utils import templates
 from projectstarter.utils import files, logger
 
 
+def _retrieve_options(patterns, options_tree):
+    """
+    Recursive iteration on nested options. If an option matches one of
+    the given names, it is added to the list of returned options.
+    :param patterns: List of the options patterns to look for (separated with config.options_sep if nested)
+    :param options_tree: The options dictionary tree
+    :return: Dictionary of key/value options that matched the given names. None on error.
+    """
+    # Names example:
+    # [foo, foo:bar]
+
+    # Options dictionary tree example:
+    # {
+    # options: {
+    #   foo: {
+    #     options: {
+    #       bar: { ... }
+    #     }
+    #   }
+    # }
+
+    # Stop recursion
+    if len(patterns) == 0:
+        return {}
+
+    options = {}
+
+    # For each option
+    for name, value in options_tree.get("options", {}).items():
+        # For each pattern
+        for pattern in patterns:
+            try:
+                if config.options_sep not in pattern:
+                    # Handle simple option
+                    if re.match(pattern, name):
+                        options[name] = value
+                else:
+                    # Handle nested option
+                    if re.match(pattern.split(config.options_sep)[0], name):
+                        # Move patterns one option forward
+                        new_patterns = [
+                            re.sub(r"^.*?" + config.options_sep, "", p)
+                            for p in patterns
+                            if config.options_sep in p
+                        ]
+                        # Get nested options
+                        new_options = _retrieve_options(new_patterns, value)
+                        if new_options is None:
+                            return None
+                        # Prefix keys with current name
+                        new_options = {
+                            f"{name}{config.options_sep}{k}": v
+                            for k, v in new_options.items()
+                        }
+                        # Add new items to resulting options
+                        options = {**options, **new_options}
+            except re.error as e:
+                logger.error(f"option pattern '{pattern}' is invalid: {e}")
+                return None
+
+    return options
+
+
 def run(args):
     """
     Run the command.
@@ -39,15 +102,20 @@ def run(args):
 
     # Keep only requested options
     if "options" in template_metadata:
-        try:
-            template_metadata["options"] = {
-                k: v
-                for k, v in template_metadata["options"].items()
-                if any(True for option in args.options if re.match(option, k))
-            }
-        except re.error as e:
-            logger.error(f"Pattern match for options failed: {e}")
+        options = _retrieve_options(args.options, template_metadata)
+        if not options:
             return 1
+
+        # Display unmatched options
+        option_has_not_matched = False
+        for option in args.options:
+            if option not in options.keys():
+                option_has_not_matched = True
+                logger.error(f"Option pattern '{option}' did not match anything.")
+        if option_has_not_matched:
+            return 1
+
+        template_metadata["options"] = options
 
     # Complete parse data
     data = {**data, **template_metadata}
@@ -60,7 +128,7 @@ def run(args):
                 "Destination folder already exists. You can force its removal with the --force option."
             )
             return 1
-        logger.warning(f"Force option set: remove folder '{output_path}'")
+        logger.warning(f"Force option set: removing folder '{output_path}'")
         files.rm(output_path)
 
     # List files to copy over
