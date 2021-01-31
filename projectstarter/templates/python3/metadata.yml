@@ -34,13 +34,8 @@ options:
     files:
       - "{{ project.slug }}/utils/logger.py.j2"
   git:
-    description: initiate a git repository and create the first commit
-    files:
-      - ".gitignore.j2"
-    commands:
-      - "git init"
-      - "git add ."
-      - "git commit -m 'init: first commit'"
+    include_templates:
+      - git
   readme:
     description: create a README.md file
     files:

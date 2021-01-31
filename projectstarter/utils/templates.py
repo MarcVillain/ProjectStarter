@@ -57,6 +57,40 @@ def parse(path, data):
     return template.render(**data)
 
 
+def _include_templates(data):
+    """
+    Recursively iterate through every fields of a dictionary and replace the
+    'include_templates' fields with the corresponding template's metadata.
+    :param data: The metadata to update
+    :return: The updated metadata
+    """
+    templates = []
+
+    for k, v in data.items():
+        # Recursive iteration
+        if isinstance(v, dict):
+            data[k] = _include_templates(v)
+        # Extract templates to include
+        elif k == "include_templates":
+            templates += v
+        else:
+            continue
+
+    # if there are templates to include
+    if len(templates) > 0:
+        # Remove include field
+        data.pop("include_templates")
+
+        # Update fields with template's data
+        for template in templates:
+            logger.debug(f"including template: {template}")
+            included_data = metadata(template)
+            logger.debug(f"{template} template data: {included_data}")
+            data = {**data, **included_data}
+
+    return data
+
+
 def metadata(name):
     """
     Retrieve the metadata from the 'templates/{name}/metadata.yml' file.
@@ -66,10 +100,14 @@ def metadata(name):
     metadata_path = os.path.join(config.templates_folder, name, "metadata.yml")
     logger.debug(f"metadata.yml path: {metadata_path}")
 
+    # Load template metadata
     template_metadata = io.yaml_load(metadata_path)
     if template_metadata is None:
         logger.warning(f"template '{name}' missing or empty 'metadata.yml' file")
         return None
+
+    # Load included templates
+    template_metadata = _include_templates(template_metadata)
 
     return template_metadata
 

@@ -96,12 +96,17 @@ def run(args):
 
     # Retrieve list of commands to run
     def _parse_command(command):
+        logger.debug(f"parsing command: {command}")
         commands = []
+
+        # Parse a list of commands
         if isinstance(command, list):
             for cmd in command:
                 commands += _parse_command(cmd)
         elif command[0] == "[":
             commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader))
+
+        # Parse a Jinja2 formatted command
         elif ("{{" in command and "}}" in command) or ("{%" in command and "%}" in command):
             try:
                 commands += _parse_command(templates.parse_string(command, data))
@@ -109,8 +114,11 @@ def run(args):
                 # In case the value is undefined, it means the command
                 # should not be executed
                 pass
+
+        # Parse a regular command
         else:
             commands.append(command)
+
         return commands
 
     commands = []

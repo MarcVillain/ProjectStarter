@@ -23,6 +23,7 @@ Fields:
 * `options.name.description` : small description of the option
 * `options.name.files` : files to copy to the output project directory when the option is set
 * `options.name.commands` : list of commands to run when the option is set (for the commands to be run, they actually need to be added to the `commands` field with value `"{{ options.name.commands }}`)
+* `include_templates` : no matter where placed in the metadata, this field will be expanded with the matching template's metadata fields
 
 Fields expansion is available as the file is first loaded as a yaml file, then parsed like a normal [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/) file, using the loaded data.
 
@@ -46,6 +47,9 @@ options:
       - "file.txt.j2"
     commands:
       - "echo Bar"
+  bar:
+    include_templates:
+      - template_name
 ```
 
 # Files

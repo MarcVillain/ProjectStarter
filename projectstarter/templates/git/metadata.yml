@@ -1,0 +1,9 @@
+description: "Git repository"
+requirements:
+  - git
+commands:
+  - "git init"
+  - "git add ."
+  - "git commit -m 'init: first commit'"
+files:
+  - ".gitignore.j2"
