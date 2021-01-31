@@ -244,7 +244,7 @@ def parse(prog, args):
         metavar="OPTION",
         nargs="*",
         default=[],
-        help="options to activate",
+        help=f"options to activate (nested options are accessible by using the '{config.options_sep}' separator)",
     )
     parser.add_argument(
         "-f",
