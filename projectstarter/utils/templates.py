@@ -86,7 +86,21 @@ def _include_templates(data):
             logger.debug(f"including template: {template}")
             included_data = metadata(template)
             logger.debug(f"{template} template data: {included_data}")
-            data = {**data, **included_data}
+            # Append new values to the data
+            for k, v in included_data.items():
+                # If it does not exist, add the new field
+                if k not in data.keys():
+                    data[k] = v
+
+                # If its a list, append item to existing values if necessary
+                elif isinstance(data[k], list):
+                    if isinstance(v, list):
+                        for item in v:
+                            if item not in data[k]:
+                                data[k].append(item)
+                    else:
+                        if v not in data[k]:
+                            data[k].append(v)
 
     return data
 

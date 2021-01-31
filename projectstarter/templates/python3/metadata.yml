@@ -34,6 +34,7 @@ options:
     files:
       - "{{ project.slug }}/utils/logger.py.j2"
   git:
+    description: create a git repository
     include_templates:
       - git
   readme:
