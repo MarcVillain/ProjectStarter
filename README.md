@@ -31,6 +31,11 @@ or
 python -m project --help
 ```
 
+# Example
+```shell script
+project start bash my_project -o git cli license:mit
+```
+
 # Debug
 
 ```shell script
