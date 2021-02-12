@@ -2,6 +2,7 @@ description: "bash program"
 requirements: []
 commands:
   - "{{ options.git.commands }}"
+  - "{{ options.license.commands }}"
 files:
   - "Makefile.j2"
   - "src/main.sh.j2"
