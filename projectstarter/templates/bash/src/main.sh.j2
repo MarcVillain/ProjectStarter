@@ -1,5 +1,12 @@
 main()
 {
+    {% if options.cli -%}
+    cli "$@"
+    {%- endif %}
+    {% if options.logging -%}
+    log_info "Hello, World!"
+    {%- else -%}
     echo "Hello, World!"
+    {%- endif %}
     return 0
 }

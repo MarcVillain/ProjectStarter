@@ -1,0 +1,26 @@
+log_verbose()
+{
+    if [ -n "$VERBOSE" ]; then
+        echo "$*"
+    fi
+}
+
+log_warn()
+{
+    echo "warning: $*" >&2
+}
+
+log_error()
+{
+    echo "error: $*" >&2
+}
+
+log_debug()
+{
+    log_verbose "debug: $*" >&2
+}
+
+log_info()
+{
+    echo "$*"
+}

@@ -8,11 +8,10 @@ all: ${BIN}
 ${BIN}: ${SRC}
 	echo -e "#!${SHELL}\n" > ${BIN}
 	for filename in ${SRC}; do cat $${filename} | sed -E '/^#/d' >> ${BIN}; echo >> ${BIN}; done
-	echo -e "\n\nmain \$$@" >> ${BIN}
+	echo -e "\n\nmain \"\$$@\"" >> ${BIN}
 	cat -s ${BIN} > ${BIN}.tmp
 	mv ${BIN}.tmp ${BIN}
 	chmod +x ${BIN}
 
 clean:
 	$(RM) ${BIN}
-

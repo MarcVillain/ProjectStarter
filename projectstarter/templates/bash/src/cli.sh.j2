@@ -1,0 +1,63 @@
+print_usage()
+{
+    echo "usage: ./{{ project.slug }} [options...] fixme_argument_name"
+}
+
+print_help()
+{
+    cat <<-EOF
+FIXME_DESCRIPTION
+
+POSITIONAL ARGUMENTS
+fixme_argument_name    fixme small description
+
+OPTIONS
+-h,--help       show this help message
+-v,--verbose    display debug information
+EOF
+}
+
+cli_exit_if_no_arguments()
+{
+    if [[ "$#" -eq 0 ]]; then
+        {% if options.logging -%}
+            log_error "not enough arguments"
+        {%- else -%}
+            echo "not enough arguments" >&2
+        {%- endif %}
+        print_usage
+        exit 1
+    fi
+}
+
+cli()
+{
+    # Read options from command line
+    local _ARGUMENTS=()
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help) print_help; exit 0;;
+            -v|--verbose) export VERBOSE=true; shift;;
+            {% if options.logging -%}
+            -*) log_error "unknown option: $1"; exit 1;;
+            {%- else -%}
+            -*) echo "unknown option: $1" >&2; exit 1;;
+            {%- endif %}
+            *) _ARGUMENTS+=("$1"); shift;;
+        esac
+    done
+
+    # Reset positional arguments
+    set -- "${_ARGUMENTS[@]}"
+
+    {% if options.logging -%}
+    log_debug "number of positional arguments: $#"
+    log_debug "positional arguments: $*"
+    {%- endif %}
+
+    # At least one positional argument is required
+    cli_exit_if_no_arguments "$@"
+
+    # Handle positional arguments
+    FIXME_ARGUMENT_NAME="$1"
+}

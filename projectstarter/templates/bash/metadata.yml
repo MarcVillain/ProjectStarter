@@ -18,3 +18,11 @@ options:
     description: create a license file
     include_templates:
       - license
+  cli:
+    description: add a simple command line interface
+    files:
+      - "src/cli.sh.j2"
+  logging:
+    description: setup simple logging
+    files:
+      - "src/log.sh.j2"
