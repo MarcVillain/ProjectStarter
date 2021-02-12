@@ -251,7 +251,7 @@ def run(args):
 
     # Success message
     logger.info(f"Project created at '{output_path}'")
-    logger.info(f"Run `grep -R FIXME '{output_path}'` to complete the setup")
+    logger.info(f"Run `grep -Ri FIXME '{output_path}'` to complete the setup")
 
 
 def parse(prog, args):
