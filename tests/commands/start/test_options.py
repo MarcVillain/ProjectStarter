@@ -15,7 +15,7 @@ def test_filter_options_simple(data_tree):
 
 def test_filter_options_simple_does_not_exist(data_tree):
     patterns = ["does_not_exist"]
-    expected_res = {}
+    expected_res = None
 
     assert filter_options(patterns, data_tree) == expected_res
 
@@ -52,7 +52,7 @@ def test_filter_options_nested(data_tree):
 
 def test_filter_options_nested_does_not_exist(data_tree):
     patterns = [f"licence{config.options_sep}does_not_exist"]
-    expected_res = {}
+    expected_res = None
 
     assert filter_options(patterns, data_tree) == expected_res
 

@@ -66,7 +66,16 @@ def filter_options(patterns, options_tree):
     """
     if len(patterns) == 0:
         # Retrieve all
-        return options_tree.get("options", {})
+        filtered_options = options_tree.get("options", {})
     else:
         # Retrieve partial
-        return _filter_options(patterns, options_tree)
+        filtered_options = _filter_options(patterns, options_tree)
+
+    # Display unmatched options
+    pattern_has_not_matched = False
+    for pattern in patterns:
+        if pattern.split(config.options_sep)[0] not in filtered_options.keys():
+            pattern_has_not_matched = True
+            logger.error(f"Option pattern '{pattern}' did not match anything.")
+
+    return None if pattern_has_not_matched else filtered_options

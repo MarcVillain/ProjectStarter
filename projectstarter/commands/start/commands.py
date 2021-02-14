@@ -1,3 +1,5 @@
+import subprocess
+
 import jinja2
 
 from projectstarter.utils import logger, templates, io
@@ -43,3 +45,31 @@ def parse_commands(data):
                 pass
 
         data["commands"] = parsed_commands
+
+
+def run_commands(commands, working_directory):
+    """
+    Run the given list of commands in the given folder.
+    :param commands: List of commands to execute
+    :param working_directory: Path to the folder where the commands should be executed
+    :return: 0 on success, 1 on error.
+    """
+    for command in commands:
+        logger.info(f"Running command '{command}'")
+        with subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=working_directory,
+                shell=True,
+        ) as p:
+            try:
+                stdout, stderr = p.communicate()
+                logger.debug(stdout.decode("utf-8"))
+                ret_val = p.returncode
+                if ret_val != 0:
+                    logger.error(f"Commands execution failed with error code {ret_val}")
+                    logger.error(stderr)
+            except Exception as e:
+                p.kill()
+                raise e

@@ -47,7 +47,7 @@ project --help
 
 ```shell script
 pip install -r requirements-dev.txt
-pytest tests
+make check
 ```
 
 # Troubleshooting
