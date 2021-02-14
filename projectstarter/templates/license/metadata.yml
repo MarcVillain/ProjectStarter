@@ -7,8 +7,10 @@ commands:
   - "{{ options.lgpl3.commands }}"
 options:
   mit:
+    description: MIT License (https://api.github.com/licenses/mit)
     commands:
       - "curl https://api.github.com/licenses/mit | jq -r .body > LICENSE.md"
   lgpl3:
+    description: LGPL-3.0 License (https://api.github.com/licenses/lgpl-3.0)
     commands:
       - "curl https://api.github.com/licenses/lgpl-3.0 | jq -r .body > LICENSE.md"

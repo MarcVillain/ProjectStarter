@@ -6,14 +6,41 @@ import argparse
 from projectstarter.utils import templates, io
 
 
+def _clean_metadata(metadata, parent=None, parent_key=None):
+    keys_to_keep = ["description", "include_templates"]
+    keys_to_pop = []
+
+    for k, v in metadata.items():
+        # Go down the tree
+        if isinstance(v, dict):
+            _clean_metadata(v, parent=metadata, parent_key=k)
+            continue
+
+        # Filter out keys to remove
+        if k not in keys_to_keep:
+            keys_to_pop.append(k)
+
+    # Remove unwanted keys
+    for k in keys_to_pop:
+        metadata.pop(k)
+
+    # If there is only a description field, make it go up by one
+    if parent is not None \
+            and len(metadata.keys()) == 1 \
+            and metadata.get("description", None) is not None:
+        parent[parent_key] = metadata["description"]
+
+
 def run(args):
     """
     Run the command.
     :param args: Arguments given to the command
     """
-    metadata = templates.metadata(args.template)
+    metadata = templates.metadata(args.template, include=False)
     if not metadata:
         return 1
+
+    _clean_metadata(metadata)
 
     io.yaml_dump(metadata)
 

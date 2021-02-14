@@ -103,10 +103,11 @@ def _include_templates(data):
     return data
 
 
-def metadata(name):
+def metadata(name, include=True):
     """
     Retrieve the metadata from the 'templates/{name}/metadata.yml' file.
     :param name: Name of the template
+    :param include: Load included templates
     :returns: Dictionary of metadata on success. None on error.
     """
     metadata_path = os.path.join(config.templates_folder, name, "metadata.yml")
@@ -119,7 +120,8 @@ def metadata(name):
         return None
 
     # Load included templates
-    template_metadata = _include_templates(template_metadata)
+    if include:
+        template_metadata = _include_templates(template_metadata)
 
     return template_metadata
 
