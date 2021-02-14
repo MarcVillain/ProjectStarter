@@ -3,132 +3,15 @@ Generate a project from a template
 """
 import argparse
 import os
-import re
 import subprocess
 
-import jinja2
-import yaml
 from slugify import slugify
 
 from projectstarter import config
+from projectstarter.commands.start.commands import parse_commands
+from projectstarter.commands.start.options import filter_options
 from projectstarter.utils import templates
 from projectstarter.utils import files, logger
-
-
-def _parse_command(command, data):
-    """
-    Parse a single string command using the given data.
-    :param command: Command to parse
-    :param data: Data to give to the parser
-    :return: List of extracted commands
-    """
-    logger.debug(f"parsing command: {type(command)}: {command}")
-    commands = []
-
-    # Parse a list of commands
-    if isinstance(command, list):
-        for cmd in command:
-            commands += _parse_command(cmd, data)
-    elif command[0] == "[":
-        commands += _parse_command(yaml.load(command, Loader=yaml.FullLoader), data)
-
-    # Parse a Jinja2 formatted command
-    elif ("{{" in command and "}}" in command) or (
-            "{%" in command and "%}" in command
-    ):
-        try:
-            command_str = templates.parse_string(command, data)
-            commands += _parse_command(command_str, data)
-        except jinja2.exceptions.UndefinedError as e:
-            # In case the value is undefined, it means the command
-            # should not be executed
-            logger.debug(f"jijna2 undefined error: {e}")
-            pass
-
-    # Parse a regular command
-    else:
-        commands.append(command)
-
-    return commands
-
-
-def parse_commands(data):
-    """
-    Parse the data["commands"] using the data.
-    :param data: The data to use
-    :return: The parsed data
-    """
-    parsed_commands = []
-    for command in data.get("commands", []):
-        parsed_commands += _parse_command(command, data)
-    return parsed_commands
-
-
-def _retrieve_options(patterns, options_tree):
-    """
-    Recursive iteration on nested options. If an option matches one of
-    the given names, it is added to the list of returned options.
-    :param patterns: List of the options patterns to look for (separated with config.options_sep if nested)
-    :param options_tree: The options dictionary tree
-    :return: Dictionary of key/value options that matched the given names. None on error.
-    """
-    # Names example:
-    # [foo, foo:bar]
-
-    # Options dictionary tree example:
-    # {
-    # options: {
-    #   foo: {
-    #     options: {
-    #       bar: { ... }
-    #     }
-    #   }
-    # }
-
-    # Stop recursion
-    if len(patterns) == 0:
-        return {}
-
-    options = {}
-
-    # For each option
-    for name, value in options_tree.get("options", {}).items():
-        # For each pattern
-        for pattern in patterns:
-            try:
-                if config.options_sep not in pattern:
-                    # Handle simple option
-                    if re.match(pattern, name):
-                        # No need for nested options on match
-                        if "options" in value.keys():
-                            value.pop("options")
-                        # Add option in options list
-                        options[name] = value
-                else:
-                    # Handle nested option
-                    if re.match(pattern.split(config.options_sep)[0], name):
-                        # Move patterns one option forward
-                        new_patterns = [
-                            re.sub(r"^.*?" + config.options_sep, "", p)
-                            for p in patterns
-                            if config.options_sep in p
-                        ]
-                        # Get nested options
-                        new_options = _retrieve_options(new_patterns, value)
-                        if new_options is None:
-                            return None
-                        # Prefix keys with current name
-                        new_options = {
-                            f"{name}": v
-                            for k, v in new_options.items()
-                        }
-                        # Add new items to resulting options
-                        options = {**options, **new_options}
-            except re.error as e:
-                logger.error(f"option pattern '{pattern}' is invalid: {e}")
-                return None
-
-    return options
 
 
 def run(args):
@@ -155,7 +38,7 @@ def run(args):
 
     # Keep only requested options
     if "options" in template_metadata:
-        options = _retrieve_options(args.options, template_metadata)
+        options = filter_options(args.options, template_metadata)
         if options is None:
             return 1
 
@@ -175,7 +58,8 @@ def run(args):
     logger.debug(f"Data: {data}")
 
     # Parse commands
-    commands = parse_commands(data)
+    parse_commands(data)
+    commands = data["commands"]
     logger.debug(f"Commands: {commands}")
 
     # Create destination folder
@@ -192,8 +76,8 @@ def run(args):
             return 1
 
     # List files to copy over
-    files_to_copy = template_metadata.get("files", [])
-    for option, value in template_metadata.get("options", {}).items():
+    files_to_copy = data.get("files", [])
+    for option, value in data.get("options", {}).items():
         files_to_copy += value.get("files", [])
     logger.debug(f"Files to copy: {files_to_copy}")
 
@@ -272,7 +156,7 @@ def parse(prog, args):
         metavar="OPTION",
         nargs="*",
         default=[],
-        help=f"options to activate (nested options are accessible by using the '{config.options_sep}' separator)",
+        help=f"filter options to activate (nested options are accessible by using the '{config.options_sep}' separator)",
     )
     parser.add_argument(
         "-f",

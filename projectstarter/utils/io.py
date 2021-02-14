@@ -17,6 +17,15 @@ def yaml_load(file_path):
         return yaml.load(f, Loader=yaml.FullLoader)
 
 
+def yaml_load_str(string):
+    """
+    Load a Yaml string.
+    :param string: String to load
+    :returns: Dictionary matching the Yaml string's content
+    """
+    return yaml.load(string, Loader=yaml.FullLoader)
+
+
 def yaml_dump(content, stream=sys.stdout):
     """
     Dump (write) a Yaml content to stream.

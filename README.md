@@ -43,6 +43,13 @@ pip install -e .
 project --help
 ```
 
+# Test
+
+```shell script
+pip install -r requirements-dev.txt
+pytest tests
+```
+
 # Troubleshooting
 
 * error: invalid command 'bdist_wheel'
