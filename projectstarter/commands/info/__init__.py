@@ -7,6 +7,12 @@ from projectstarter.utils import templates, io
 
 
 def _clean_metadata(metadata, parent=None, parent_key=None):
+    """
+    Keep only wanted metadata fields and move descriptions if necessary.
+    :param metadata: The metadata to cleanup
+    :param parent: The parent dict of the current metadata field
+    :param parent_key: The key of the current metadata field in the parent dict
+    """
     keys_to_keep = ["description", "include_templates"]
     keys_to_pop = []
 
