@@ -1,5 +1,16 @@
+{% if options.cli is defined or options.cli_subcommands is defined -%}
+import importlib
+from {{ project.slug }} import cli
+{%- endif %}
 {% if options.logging is defined -%}
-from {{ project.slug }}.utils import logger
+from {{ project.slug }} import log
+{%- endif %}
+
+{% if options.cli is defined or options.cli_subcommands is defined -%}
+args = cli.getArguments()
+{%- endif %}
+{% if options.logging is defined -%}
+logger = log.getLogger(__name__)
 {%- endif %}
 
 
@@ -7,16 +18,19 @@ def main():
     """
     Entrypoint of the program.
     """
-    {% if options.cli is defined -%}
-    return commands.parse()
-    {%- else -%}
     {% if options.logging is defined -%}
-    logger.setup()
-    {%- endif %}
+    logger.info("Running project {{ project.name }}")
+    {%- else -%}
     print("Running project {{ project.name }}")
+    {%- endif %}
+
+    {% if options.cli is defined or options.cli_subcommands is defined -%}
+    if args.command:
+        command_module = importlib.import_module(f"{{ project.slug }}.{args.command}.run")
+        if hasattr(command_module, "run"):
+            command_module.run()
     {%- endif %}
 
 
 if __name__ == "__main__":
     exit(main())
-

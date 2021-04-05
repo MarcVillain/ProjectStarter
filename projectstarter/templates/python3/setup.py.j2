@@ -22,7 +22,7 @@ if __name__ == "__main__":
     setup(
         version=get_version(),
         packages=setuptools.find_packages(),
-        {% if options.cli is defined -%}
+        {% if options.cli is defined or options.cli_subcommands is defined -%}
         entry_points={
             "console_scripts": ["FIXME_COMMAND_NAME={{ project.slug }}.__main__:main"],
         },

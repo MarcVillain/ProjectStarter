@@ -1,0 +1,20 @@
+from {{ project.slug }} import cli
+{% if options.logging is defined -%}
+from {{ project.slug }} import log
+{%- endif %}
+
+args = cli.getArguments()
+{% if options.logging is defined -%}
+logger = log.getLogger(__name__)
+{%- endif %}
+
+
+def run() -> None:
+    """
+    Entrypoint of the example command.
+    """
+    {% if options.logging is defined -%}
+    logger.info(f"Hello, {args.name}!")
+    {%- else -%}
+    print(f"Hello, {args.name}!")
+    {%- endif %}

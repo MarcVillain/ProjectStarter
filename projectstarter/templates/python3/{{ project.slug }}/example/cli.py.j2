@@ -1,0 +1,3 @@
+def add_to(subparsers) -> None:
+    parser = subparsers.add_parser("example", help="this is an example")
+    parser.add_argument("--name", type=str, help="display 'Hello, <name>!'", default="World")

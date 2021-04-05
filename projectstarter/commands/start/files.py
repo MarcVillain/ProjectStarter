@@ -28,20 +28,21 @@ def _create_destination_folder(path, force=False):
             raise Exception("Something went wrong")
 
 
-def copy_template_files(template_name, data, output_path):
+def copy_template_files(template_name, data, output_path, force=False):
     """
     Copy the template's files to the output folder path
     and replace its content with the provided data.
     :param template_name: The name of the template to copy from
     :param data: The data to use for Jinja2 completion
     :param output_path: The output folder path
+    :param force: Should the folder be removed if it already exists
     """
-    _create_destination_folder(output_path)
+    _create_destination_folder(output_path, force)
 
     # List files to copy over
-    files_to_copy = data.get("files", [])
+    files_to_copy = set(data.get("files", []))
     for option, value in data.get("options", {}).items():
-        files_to_copy += value.get("files", [])
+        files_to_copy = files_to_copy.union(set(value.get("files", [])))
     logger.debug(f"Files to copy: {files_to_copy}")
 
     # Expand folders paths
@@ -65,7 +66,7 @@ def copy_template_files(template_name, data, output_path):
     # Parse and copy files to destination
     for src, dst in paths_to_copy.items():
         # Retrieve destination folder
-        logger.debug(src, "-->", dst)
+        logger.debug("Copying", src, "-->", dst)
         # Ensure destination folder exists
         files.mkdir(os.path.dirname(dst), ignore_errors=True)
         # Parse content

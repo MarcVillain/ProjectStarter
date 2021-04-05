@@ -9,7 +9,6 @@ commands:
 files:
   - "{{ project.slug }}/__init__.py.j2"
   - "{{ project.slug }}/__main__.py.j2"
-  - "{{ project.slug }}/utils/__init__.py.j2"
 options:
   venv:
     description: "create a virtual environment"
@@ -17,7 +16,7 @@ options:
       - "requirements.txt.j2"
     commands:
       - "virtualenv venv --python={{ which('python3') }}"
-      - "{% if options.cli %}source venv/bin/activate && pip install wheel{% endif %}"
+      - "{% if options.cli is defined or options.cli_subcommands is defined %}source venv/bin/activate && pip install wheel{% endif %}"
       - "source venv/bin/activate && pip install -r requirements.txt"
   package:
     description: add packaging files
@@ -29,11 +28,16 @@ options:
   cli:
     description : add a command line interface structure
     files:
-      - "{{ project.slug }}/commands/"
+      - "{{ project.slug }}/cli.py.j2"
+  cli_subcommands:
+    description : add a subcommands structure
+    files:
+      - "{{ project.slug }}/cli.py.j2"
+      - "{{ project.slug }}/example/"
   logging:
     description: setup simple logging
     files:
-      - "{{ project.slug }}/utils/logger.py.j2"
+      - "{{ project.slug }}/log.py.j2"
   git:
     description: create a git repository
     include_templates:

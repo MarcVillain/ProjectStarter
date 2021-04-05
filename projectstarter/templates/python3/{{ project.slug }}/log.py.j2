@@ -1,0 +1,56 @@
+import logging
+
+# --- Setup --- #
+
+{% if options.cli is defined or options.cli_subcommands is defined -%}
+from {{ project.slug }} import cli
+
+args = cli.getArguments()
+{%- endif %}
+
+_logger_is_setup = False
+
+def _setup() -> None:
+    """
+    Setup logging.
+    """
+    global _logger_is_setup
+    level = {% if options.cli is defined or options.cli_subcommands is defined %}logging.DEBUG if args.verbose else {% endif %}logging.INFO
+    handlers = [
+        logging.StreamHandler(),
+    ]
+
+    {% if options.cli is defined or options.cli_subcommands is defined -%}
+    # Add file logger is necessary
+    if args.log_file:
+        if len(args.log_file) == 0:
+            args.log_file = "{{ project.slug }}"
+        file_handler = logging.FileHandler(args.log_file)
+        file_handler.setLevel(level)
+        handlers.append(file_handler)
+
+    # Disable handlers if silent mode is activated
+    if args.silent:
+        handlers = []
+    {%- endif %}
+
+    # Setup basic configuration
+    logging.basicConfig(
+        level=level,
+        handlers=handlers,
+    )
+    _logger_is_setup = True
+
+
+# --- Helpers ---#
+
+def getLogger(name: str = None) -> logging.Logger:
+    """
+    Logger wrapper. Use this instead of logging.getLogger
+    to ensure the proper configuration is applied.
+    """
+    if not _logger_is_setup:
+        _setup()
+    if name is None or name == "__main__":
+        name = "{{ project.slug }}"
+    return logging.getLogger(name)
