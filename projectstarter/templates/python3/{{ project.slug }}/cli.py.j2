@@ -1,0 +1,95 @@
+import argparse
+{% if options.cli_subcommands is defined -%}
+import pkgutil
+{%- endif %}
+import sys
+
+from typing import List
+
+{% if options.cli_subcommands is defined -%}
+import {{ project.slug }}
+{%- endif %}
+{% if options.package is defined -%}
+from {{ project.slug }}._version import __version__
+{%- endif %}
+
+_args = None
+
+
+def _parse(arguments: List[str] = None) -> argparse.Namespace:
+    """
+    Parse the command line arguments.
+    :param arguments: List of arguments to parse (Default: sys.argv[1:])
+    :return: The parsed arguments.
+    """
+    global _args
+
+    # Load main parser
+    parser = argparse.ArgumentParser(
+        prog="{{ project.slug }}",
+    )
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        {% if options.package is defined -%}
+        version=__version__,
+        {%- else -%}
+        version="0.0.1",
+        {%- endif %}
+    )
+    {% if options.logging is defined -%}
+    parser.add_argument(
+        "-s",
+        "--silent",
+        action="store_true",
+        help="disable all logging handlers",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="set logging level to DEBUG",
+    )
+    parser.add_argument(
+        "--log-file",
+        type=str,
+        help="output logs to a logging file",
+    )
+    {%- endif %}
+
+    {% if options.cli_subcommands is defined -%}
+    # Load subparsers
+    subparsers = parser.add_subparsers(dest="command")
+
+    for loader, module_name, is_pkg in pkgutil.walk_packages({{ project.slug }}.__path__, {{ project.slug }}.__name__ + "."):
+        # For each package
+        if not is_pkg:
+            continue
+        # Import package
+        module = __import__(module_name, fromlist="dummylist")
+        for sub_loader, sub_module_name, sub_is_pkg in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
+            # For each submodule that is not a package
+            if sub_is_pkg:
+                continue
+            if not sub_module_name.endswith(".cli"):
+                continue
+            # If submodule contains cli.py
+            sub_module = __import__(sub_module_name, fromlist="dummylist")
+            # If function add_to exists, use it
+            if hasattr(sub_module, "add_to"):
+                getattr(sub_module, "add_to")(subparsers)
+    {%- endif %}
+
+
+    # Parse arguments
+    _args = parser.parse_args(arguments or sys.argv[1:])
+    return _args
+
+
+def getArguments() -> argparse.Namespace:
+    """
+    Get the CLI arguments.
+    :return: The parsed arguments.
+    """
+    return _args or _parse()

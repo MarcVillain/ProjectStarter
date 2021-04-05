@@ -53,9 +53,10 @@ def run(args):
     logger.info(f"Creating project '{project_name}'")
 
     try:
-        copy_template_files(args.template, data, output_path)
+        copy_template_files(args.template, data, output_path, args.force)
         run_commands(commands, output_path)
     except Exception as e:
+        logger.error(e)
         return 1
 
     # Success message
